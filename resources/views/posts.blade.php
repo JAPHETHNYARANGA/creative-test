@@ -31,18 +31,22 @@
         <div id="posts-list">
             @foreach($posts as $post)
                 <div class="post-item">
-                    <h3>{{ $post->title }}</h3>
-                    <p>{{ $post->content }}</p>
-                    {{-- <a href="{{ route('posts.show', $post->id) }}" class="btn btn-info btn-sm">View</a> --}}
-                    <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+                    <div id="view-post-{{ $post->id }}">
+                        <h3>{{ $post->title }}</h3>
+                        <p>{{ $post->content }}</p>
+                        <a href="{{ route('posts.show', $post->id) }}" class="btn btn-info btn-sm">View</a>
+                        <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
                 </div>
             @endforeach
         </div>
 
+        <!-- Create post form -->
         <form action="{{ route('posts.store') }}" method="POST">
             @csrf
             <h3>Create Post</h3>

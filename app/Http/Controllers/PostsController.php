@@ -75,7 +75,7 @@ class PostsController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            return view('posts.show', ['post' => $post]);
+            return view('show', ['post' => $post]);
 
             // for api
             // return response()->json($post);
@@ -151,5 +151,26 @@ class PostsController extends Controller
         }
         
     }
+
+    public function edit($id)
+    {
+        try {
+            $post = Posts::findOrFail($id);
+
+            // Check if the authenticated user is the owner
+            if ($post->user_id !== Auth::id()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            return view('edit', ['post' => $post]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 }
 
