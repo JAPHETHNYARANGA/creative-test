@@ -27,10 +27,14 @@ class AuthenticationController extends Controller
             
 
             if (!Auth::attempt($credentials)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid credentials'
-                ], 401);
+
+                return redirect()->back()->with('message', 'Invalid credentials')->withInput();
+
+                // for api routes
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'Invalid credentials'
+                // ], 401);
             }
 
 
@@ -61,10 +65,13 @@ class AuthenticationController extends Controller
                 // }
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+            return redirect()->back()->with('message', 'An error occurred during login: ' . $th->getMessage())->withInput();
+
+            // for api routes
+            // return response()->json([
+            //     'status' => false,
+            //     'message' => $th->getMessage()
+            // ], 500);
         }
     }
 
@@ -112,22 +119,34 @@ class AuthenticationController extends Controller
         } catch (\Illuminate\Database\QueryException $exception) {
             // Check if the error is due to duplicate email
             if ($exception->errorInfo[1] === 1062) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Email already used'
-                ], 400);
+
+                return redirect()->back()->with('message', 'Email already used')->withInput();
+
+                //for api routes
+                // return response()->json([
+                //     'status' => false,
+                //     'message' => 'Email already used'
+                // ], 400);
             }
 
             // Other database-related errors
-            return response()->json([
-                'status' => false,
-                'message' => 'Database error'
-            ], 500);
+
+            return redirect()->back()->with('message', 'Email already used')->withInput();
+
+            //for api
+            // return response()->json([
+            //     'status' => false,
+            //     'message' => 'Database error'
+            // ], 500);
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+
+            return redirect()->back()->with('message', 'An error occurred during registration: ' . $th->getMessage())->withInput();
+
+            //for api
+            // return response()->json([
+            //     'status' => false,
+            //     'message' => $th->getMessage()
+            // ], 500);
         }
     }
 }

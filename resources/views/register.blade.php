@@ -33,7 +33,7 @@
               <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password">
             </div>
         
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
           </form>
 
           <p class="mt-3">
