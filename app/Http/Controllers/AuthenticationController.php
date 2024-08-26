@@ -24,6 +24,8 @@ class AuthenticationController extends Controller
 
             $credentials = $request->only('email', 'password');
 
+            
+
             if (!Auth::attempt($credentials)) {
                 return response()->json([
                     'success' => false,
@@ -36,19 +38,27 @@ class AuthenticationController extends Controller
 
                 if ($user) {
                     $token = $user->createToken('UserAuthentication')->plainTextToken;
-                    return response([
-                        'success' => true,
-                        'message' => 'User logged in successfully',
-                        'token' => $token,
-                        'user' => $user
-                    ], 200);
-                } else {
-                    Auth::logout(); 
-                    return response([
-                        'success' => false,
-                        'message' => 'Failed to login'
-                    ], 401);
+
+                    // Store the token in the session
+                    $request->session()->put('token', $token);
+
+                    return redirect('posts')->with('message', 'Login successful!');
+
+                    // for api routes
+                    // return response([
+                    //     'success' => true,
+                    //     'message' => 'User logged in successfully',
+                    //     'token' => $token,
+                    //     'user' => $user
+                    // ], 200);
                 }
+                //  else {
+                //     Auth::logout(); 
+                //     return response([
+                //         'success' => false,
+                //         'message' => 'Failed to login'
+                //     ], 401);
+                // }
             }
         } catch (\Throwable $th) {
             return response()->json([
@@ -78,19 +88,27 @@ class AuthenticationController extends Controller
 
             $res = $user->save();
 
+
             if ($res) {
-       
-                return response()->json([
-                    'success' => true,
-                    'message' => 'User registered successfully. ',
-                    'user' => $user
-                ], 200);
+                return redirect('/')->with('message', 'User registered successfully. Please login.');
             } else {
-                return response([
-                    'success' => false,
-                    'message' => 'Failed to register user'
-                ], 201);
+                return redirect()->back()->with('message', 'Failed to register user');
             }
+
+            // for api routes
+            // if ($res) {
+       
+            //     return response()->json([
+            //         'success' => true,
+            //         'message' => 'User registered successfully. ',
+            //         'user' => $user
+            //     ], 200);
+            // } else {
+            //     return response([
+            //         'success' => false,
+            //         'message' => 'Failed to register user'
+            //     ], 201);
+            // }
         } catch (\Illuminate\Database\QueryException $exception) {
             // Check if the error is due to duplicate email
             if ($exception->errorInfo[1] === 1062) {

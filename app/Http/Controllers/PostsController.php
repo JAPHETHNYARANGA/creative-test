@@ -14,7 +14,14 @@ class PostsController extends Controller
     {
         try{
             $userId = Auth::id();
-            return response()->json(Posts::where('user_id', $userId)->get());
+
+            $userId = Auth::id();
+            $posts = Posts::where('user_id', $userId)->get();
+            return view('posts', ['posts' => $posts]);
+
+            // for api routes
+            // return response()->json(Posts::where('user_id', $userId)->get());
+            
 
         }catch (\Throwable $th) {
             return response()->json([
@@ -41,8 +48,10 @@ class PostsController extends Controller
             $post->content = $request->input('content');
             $post->user_id = Auth::id();
             $post->save();
-    
-            return response()->json(['success' => true, 'post' => $post], 201);
+
+            return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+            // for api
+            // return response()->json(['success' => true, 'post' => $post], 201);
 
         }catch (\Throwable $th) {
             return response()->json([
@@ -66,7 +75,11 @@ class PostsController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            return response()->json($post);
+            return view('posts.show', ['post' => $post]);
+
+            // for api
+            // return response()->json($post);
+
 
         }catch (\Throwable $th) {
             return response()->json([
@@ -97,8 +110,10 @@ class PostsController extends Controller
             $post->title = $request->input('title');
             $post->content = $request->input('content');
             $post->save();
-    
-            return response()->json(['success' => true, 'post' => $post]);
+
+            return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+            //for api
+            // return response()->json(['success' => true, 'post' => $post]);
 
         }catch (\Throwable $th) {
             return response()->json([
@@ -124,7 +139,9 @@ class PostsController extends Controller
 
             $post->delete();
 
-            return response()->json(['success' => true, 'message' => 'Post deleted']);
+            return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+            //fpor api routes
+            // return response()->json(['success' => true, 'message' => 'Post deleted']);
 
         }catch (\Throwable $th) {
             return response()->json([
